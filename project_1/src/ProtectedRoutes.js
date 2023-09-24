@@ -1,10 +1,14 @@
-import React from 'react'  
-import { useAuthState } from 'react-fire';
+import React from 'react'
+import { Navigate } from 'react-router-dom'
+import { UserAuth } from './Context/AuthContext'
 
-const ProtectedRoutes = () => {
-  return (
-    <div>ProtectedRoutes</div>
-  )
+function ProtectedRoutes({children}) {
+    const {user} = UserAuth()
+    if(!user){
+        return <Navigate to ='/'/>
+    }
+    
+  return children
 }
 
 export default ProtectedRoutes

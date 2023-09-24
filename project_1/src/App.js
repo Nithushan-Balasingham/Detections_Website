@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import AddNewUser from './Components/AddNewUser';
 import Signin from './Components/SignIn/Signin';
 import Details from './Components/Details/Details';
-import { auth } from './firebase';
 import Attend from './Components/attendance/Attend';
-
+import Home2 from './Components/Home/Home2';
+import { AuthContextProvider } from './Context/AuthContext';
+import ProtectedRoutes from './ProtectedRoutes';
+import NewDetect from './Components/newDetect/NewDetect';
 
 function App() {
   return (
-    <Routes>
+    <AuthContextProvider>
+      <Routes>
       <Route path="/" element={<Signin />} />
       <Route path="/details" element={<Details/>} />
-      <Route path="/attendance" element={<Attend/>}/>
-      <Route path="/addnewuser" element={<AddNewUser/>} />
+      <Route path="/attendance" element={<ProtectedRoutes><Attend/></ProtectedRoutes>}/>
+      <Route path="/addnewuser" element={<ProtectedRoutes><AddNewUser/></ProtectedRoutes>} />
+      <Route path="/detect" element={<ProtectedRoutes><NewDetect/></ProtectedRoutes>} />
+      <Route path="/home" element={<ProtectedRoutes><Home2/></ProtectedRoutes>} />
     </Routes>
+    </AuthContextProvider>
+  
   );
 }
 

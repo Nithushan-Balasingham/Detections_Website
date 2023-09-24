@@ -3,13 +3,14 @@ import 'firebase/compat/database'
 import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBz_WqN-gXmAmzlOmjImiP-REg8tSr0BwE",
-  authDomain: "fyp-project-a415d.firebaseapp.com",
-  databaseURL: "https://fyp-project-a415d-default-rtdb.firebaseio.com",
-  projectId: "fyp-project-a415d",
-  storageBucket: "fyp-project-a415d.appspot.com",
-  messagingSenderId: "414751786501",
-  appId: "1:414751786501:web:3b610c314ee48ccef33e6c"
+  apiKey: "AIzaSyAuGQOw-qRlp44S20Vh9XuywAoK0AwIWTk",
+  authDomain: "final-fb73b.firebaseapp.com",
+  projectId: "final-fb73b",
+  databaseURL: "https://final-fb73b-default-rtdb.firebaseio.com",
+  storageBucket: "final-fb73b.appspot.com",
+  messagingSenderId: "744156397539",
+  appId: "1:744156397539:web:bbc6e27b1570258470ead6",
+  measurementId: "G-R9C6JR7R2Z"
 };
 firebase.initializeApp(firebaseConfig);
 

@@ -2,24 +2,26 @@ import { useEffect } from 'react';
 import database from '../../firebase';
 
 export const useFetchDataFromFirebase = (setData) => {
-    useEffect(() => {
-      // Get a reference to the 'drowsiness' collection in Firebase Realtime Database
-      const databaseRef = database.ref('drowsiness');
-  
-      // Attach a listener to the 'value' event to fetch the data
-      const fetchData = (snapshot) => {
-        const fetchedData = snapshot.val();
-  
-        // Convert the fetched data into an array and update the state
+  useEffect(() => {
+    const databaseRef = database.ref('drowsiness');
+
+    const fetchData = (snapshot) => {
+      const fetchedData = snapshot.val();
+
+      // Check if fetchedData is falsy or an empty object
+      if (!fetchedData || Object.keys(fetchedData).length === 0) {
+        setData(['No Data']); // Set data to an array with "No Data" message
+      } else {
         const dataArray = Object.values(fetchedData);
         setData(dataArray);
-      };
-  
-      databaseRef.on('value', fetchData);
-  
-      // Clean up the listener when the component unmounts
-      return () => {
-        databaseRef.off('value', fetchData);
-      };
-    }, [setData]);
-  };
+      }
+    };
+
+    databaseRef.on('value', fetchData);
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      databaseRef.off('value', fetchData);
+    };
+  }, [setData]);
+};
