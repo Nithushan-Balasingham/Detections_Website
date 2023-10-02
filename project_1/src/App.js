@@ -9,6 +9,7 @@ import Home2 from './Components/Home/Home2';
 import { AuthContextProvider } from './Context/AuthContext';
 import ProtectedRoutes from './ProtectedRoutes';
 import NewDetect from './Components/newDetect/NewDetect';
+import Sananthan from './Components/Sananthan/Sananthan';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
       <Route path="/" element={<Signin />} />
       <Route path="/details" element={<Details/>} />
+      {/* <Route path="/test" element={<Sananthan/>} /> */}
       <Route path="/attendance" element={<ProtectedRoutes><Attend/></ProtectedRoutes>}/>
       <Route path="/addnewuser" element={<ProtectedRoutes><AddNewUser/></ProtectedRoutes>} />
       <Route path="/detect" element={<ProtectedRoutes><NewDetect/></ProtectedRoutes>} />

@@ -139,9 +139,7 @@ def gen_frames(input_str):
             ratio_lips = get_aspect_ratio(frame, outputs, UPPER_LOWER_LIPS, LEFT_RIGHT_LIPS)
             if all_landmarks is not None:
                 if ratio_lips < 1.8:
-                        # cv.putText(frame, "YAWN Alert!", (10, 30),
-                        # cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2),
-                        # print("Yawn")
+                       
                     return 'YAWN DETECTED'
         else:
             return 'No Face'
