@@ -8,6 +8,7 @@ const NewDetect = () => {
   const streamRef = useRef(null);
   const isMounted = useRef(true);
   const navigate = useNavigate()
+  const [showBack, setShowBack] = useState(false) // New Algorithm
 
   useEffect(() => {
     return () => {
@@ -26,6 +27,7 @@ const NewDetect = () => {
       isMounted.current = true; // Set isMounted to true when video element is available
       requestAnimationFrame(captureFrame);
       setCameraOpen(true);
+      setShowBack(true)
     } catch (error) {
       console.error('Error accessing camera:', error);
     }
@@ -38,6 +40,7 @@ const NewDetect = () => {
       videoRef.current.srcObject = null;
       streamRef.current = null;
       setCameraOpen(false);
+      setShowBack(false)
     }
   };
 
@@ -131,7 +134,11 @@ const NewDetect = () => {
         </div>
       )}
       <div className='flex items-center justify-center'>
-            <button className='text-4xl rounded-lg p-2 hover:text-green-600 font-bold text-green-400' onClick={handleBack}>Back</button>
+            <button 
+              className={`text-4xl rounded-lg p-2 hover:text-green-600 font-bold text-green-400  ${showBack ? 'hidden' : 'inline'}`}
+              onClick={handleBack}  
+              // style={{display:"hidden"}}
+            >Back</button>
           </div>
     </div>
   );

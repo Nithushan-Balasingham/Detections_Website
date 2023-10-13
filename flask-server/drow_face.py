@@ -6,12 +6,12 @@ from flask import Flask, request
 from keras.models import load_model
 from render import render_detected_face, render_drowsiness_n_yawn
 from utils import open_len, get_aspect_ratio
-import mediapipe
 import face_recognition
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from datetime import datetime
+import time
 
 
 cred = credentials.Certificate("Fyp.json")
@@ -19,6 +19,7 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://final-fb73b-default-rtdb.firebaseio.com'
 })
 ref = db.reference('drowsiness')
+last_push_time = None
 
 app = Flask(__name__)
 CORS(app)
@@ -128,7 +129,7 @@ def gen_frames(image):
                             'date' : date,
                             'time'  :time,
                             'status': 'Drowsy',
-                            'name': name  # Add the recognized name to the data
+                            'name': name
 
                         }
                         ref.push(data)
