@@ -31,7 +31,8 @@ function Home() {
         }
       }
       const handleSystem=()=>{
-        navigate('/attendance')
+        navigate('/detect')
+        // navigate("/attendance")
       }
 
       const handleDetails=()=>{

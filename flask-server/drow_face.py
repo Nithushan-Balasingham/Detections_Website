@@ -116,7 +116,6 @@ def gen_frames(image):
                     print(len_right,len_left,max_left,max_right)
                     print(drowsy_frames)
                     if(drowsy_frames):
-                        print("hisadasdasdsadass")
                         current_frame+=1
                     else:
                         current_frame=0
@@ -128,17 +127,17 @@ def gen_frames(image):
                         data ={
                             'date' : date,
                             'time'  :time,
-                            'status': 'Drowsy'
+                            'status': 'Drowsy',
+                            'name': name  # Add the recognized name to the data
+
                         }
                         ref.push(data)
-                        print("hisads")
 
                     ratio_lips = get_aspect_ratio(
                         frame, results, UPPER_LOWER_LIPS, LEFT_RIGHT_LIPS)
                     if all_landmarks is not None:
                         if ratio_lips < 1.8:
                             yawn = True
-                            print("hi")
     
     return {"Name":name, "Yawn":yawn, "Drowsiness":drowsiness}
 
