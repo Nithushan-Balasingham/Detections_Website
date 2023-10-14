@@ -8,9 +8,8 @@ export const useFetchDataFromFirebase = (setData) => {
     const fetchData = (snapshot) => {
       const fetchedData = snapshot.val();
 
-      // Check if fetchedData is falsy or an empty object
       if (!fetchedData || Object.keys(fetchedData).length === 0) {
-        setData(['No Data']); // Set data to an array with "No Data" message
+        setData(['No Data']);
       } else {
         const dataArray = Object.values(fetchedData);
         setData(dataArray);
@@ -19,7 +18,6 @@ export const useFetchDataFromFirebase = (setData) => {
 
     databaseRef.on('value', fetchData);
 
-    // Clean up the listener when the component unmounts
     return () => {
       databaseRef.off('value', fetchData);
     };

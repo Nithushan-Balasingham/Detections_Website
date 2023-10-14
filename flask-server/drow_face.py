@@ -130,7 +130,6 @@ def gen_frames(image):
                             'time'  :time,
                             'status': 'Drowsy',
                             'name': name
-
                         }
                         ref.push(data)
 

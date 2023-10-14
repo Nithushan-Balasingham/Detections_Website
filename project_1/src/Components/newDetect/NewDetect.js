@@ -24,7 +24,7 @@ const NewDetect = () => {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       videoRef.current.srcObject = stream;
       streamRef.current = stream;
-      isMounted.current = true; // Set isMounted to true when video element is available
+      isMounted.current = true; 
       requestAnimationFrame(captureFrame);
       setCameraOpen(true);
       setShowBack(true)
@@ -46,7 +46,6 @@ const NewDetect = () => {
 
   const captureFrame = () => {
     if (!isMounted.current || !videoRef.current) {
-      // Check if the component is unmounted or video element is not available, cancel the animation frame
       return;
     }
 
@@ -57,7 +56,6 @@ const NewDetect = () => {
     const context = canvas.getContext('2d');
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Rest of your captureFrame logic
     const blobPromise = new Promise(resolve => {
       canvas.toBlob(resolve, 'image/jpeg');
     });
@@ -81,7 +79,6 @@ const NewDetect = () => {
         console.error('Error sending frame to API:', error);
       })
       .finally(() => {
-        // Capture the next frame recursively
         requestAnimationFrame(captureFrame);
       });
   };
@@ -137,7 +134,6 @@ const NewDetect = () => {
             <button 
               className={`text-4xl rounded-lg p-2 hover:text-green-600 font-bold text-green-400  ${showBack ? 'hidden' : 'inline'}`}
               onClick={handleBack}  
-              // style={{display:"hidden"}}
             >Back</button>
           </div>
     </div>
