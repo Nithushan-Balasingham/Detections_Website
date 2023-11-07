@@ -20,7 +20,7 @@ function App() {
       {/* <Route path="/test" element={<Sananthan/>} /> */}
       <Route path="/attendance" element={<ProtectedRoutes><Attend/></ProtectedRoutes>}/>
       <Route path="/addnewuser" element={<ProtectedRoutes><AddNewUser/></ProtectedRoutes>} />
-      <Route path="/detect" element={<ProtectedRoutes><NewDetect/></ProtectedRoutes>} />
+      <Route path="/detect" element={<NewDetect/>} />
       <Route path="/home" element={<ProtectedRoutes><Home2/></ProtectedRoutes>} />
     </Routes>
     </AuthContextProvider>

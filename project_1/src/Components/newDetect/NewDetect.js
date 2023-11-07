@@ -1,48 +1,52 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import Typewriter from 'typewriter-effect';
 
 const NewDetect = () => {
-  const [cameraOpen, setCameraOpen] = useState(false)
   const [prediction, setPrediction] = useState(null);
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const isMounted = useRef(true);
-  const navigate = useNavigate()
-  const [showBack, setShowBack] = useState(false) // New Algorithm
+  const [stopCam, setStopCam] = useState(false)
 
+  const yawnAlert = window.speechSynthesis;
+  const drowsinessAlert = window.speechSynthesis
+
+  const speakAlert = () => {
+    const utterance = new SpeechSynthesisUtterance('Yawn detected');
+    yawnAlert.speak(utterance);
+  };
+
+  const speakAlertTwo = ()=>{
+    const utteranceTwo = new SpeechSynthesisUtterance('Drowsiness detected! Please stay alert.');
+    drowsinessAlert.speak(utteranceTwo)
+  }
   useEffect(() => {
-    return () => {
-      // Component will unmount, set isMounted to false
-      isMounted.current = false;
-      stopCamera();
+    const startCameraAutomatically = async () => {
+      try {
+        console.log("lOg",streamRef)
+          const constraints = { video: true };
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
+          videoRef.current.srcObject = stream;
+          streamRef.current = stream;
+          requestAnimationFrame(captureFrame);
+          isMounted.current = !stopCam;
+       
+        if (stopCam){
+          setTimeout(() => {
+            setStopCam(false);
+          }, 10000);
+        }       
+      } catch (error) {
+        console.error('Error accessing camera:', error);
+      }
     };
-  }, []);
 
-  const startCamera = async () => {
-    try {
-      const constraints = { video: true };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      videoRef.current.srcObject = stream;
-      streamRef.current = stream;
-      isMounted.current = true; 
-      requestAnimationFrame(captureFrame);
-      setCameraOpen(true);
-      setShowBack(true)
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-    }
-  };
+    startCameraAutomatically();
 
-  const stopCamera = () => {
-    if (streamRef.current) {
-      const streamTracks = streamRef.current.getTracks();
-      streamTracks.forEach(track => track.stop());
-      videoRef.current.srcObject = null;
-      streamRef.current = null;
-      setCameraOpen(false);
-      setShowBack(false)
-    }
-  };
+    return () => {
+      isMounted.current = false;
+    };
+  }, [stopCam]);
 
   const captureFrame = () => {
     if (!isMounted.current || !videoRef.current) {
@@ -73,7 +77,15 @@ const NewDetect = () => {
       .then(res => res.json())
       .then(data => {
         console.log(data);
+        if (data.Yawn) {
+          speakAlert();
+        }
+        if (data.Drowsiness) {
++          speakAlertTwo();
+        }
         setPrediction(data);
+        setStopCam(data.Drowsiness)
+      
       })
       .catch(error => {
         console.error('Error sending frame to API:', error);
@@ -83,59 +95,47 @@ const NewDetect = () => {
       });
   };
 
-  const handleBack = ()=>{
-    navigate('/home')
-  }
-
   return (
-    <div className='flex h-screen items-center flex-col justify-center'>
-      <h2 className='flex text-7xl text-cyan-400 font-bold mb-4'>Screen</h2>
-      <div >
+    <div className='flex h-screen items-center flex-col p-4'>
+      <div className='  w-[70vh] h-[60vh]' >
         <video ref={videoRef} autoPlay muted playsInline />
       </div>
       <div className='flex flex-col items-center justify-center mb-4'>
-        <div className='text-4xl rounded-lg p-2 hover:text-green-600 font-bold text-green-400'>
-          <button onClick={startCamera} disabled={cameraOpen} style={{cursor : cameraOpen ? "not-allowed" : "pointer"}}>
-            Start Camera
-          </button>
-        </div>   
-        <div className='text-4xl rounded-lg p-2 hover:text-red-600 font-bold text-red-400'>
-          <button  onClick={stopCamera} disabled={!cameraOpen} style={{cursor : !cameraOpen ? "not-allowed" : "pointer"}}>
-            Stop Camera
-          </button>
-        </div>   
        
       </div>
+      <div className="text-4xl mb-1 text-cyan-400 font-light">
+          Predictions
+        </div>
       {prediction && (
-        <div className='flex flex-col text-left'>
-          <p  className="font-bold text-blue-400 flex gap-4" style={{ fontSize: '20px' }}>
+        <div className='flex flex-col shadow-xl p-4 items-center justify-center h-48 w-80 rounded-xl shadow-black'>
+          <p  className="font-bold text-blue-400 flex gap-4 " style={{ fontSize: '25px' }}>
                Name:   
               <div className='font-bold text-rose-400'>          
                   {prediction.Name}
               </div>
           </p>
-          <p className='font-bold text-purple-400  flex gap-6' style={{ fontSize: '20px' }}>
+          <p className='font-bold text-purple-400  flex gap-6 ' style={{ fontSize: '25px' }}>
             Yawn:  
             <div className='font-bold text-rose-400'>          
-              {prediction.Yawn ? "True" :"FALSE"}
+              {prediction.Yawn ? "Detected" :"None"}
             </div>
           </p>
-          <p className='font-bold text-indigo-400 flex gap-1' style={{ fontSize: '20px' }}>
+          <p className='font-bold text-indigo-400 flex gap-1' style={{ fontSize: '25px' }}>
             Drowsy:  
             <div className='font-bold text-rose-400'>          
-              {prediction.Drowsiness ? "True" :"FALSE"}
+              {prediction.Drowsiness ? "Detected" :"None"}
             </div>
           </p>
           
           <p style={{ fontSize: '20px' }}>{prediction.Yawn}</p>
         </div>
       )}
-      <div className='flex items-center justify-center'>
+      {/* <div className='flex items-center justify-center'>
             <button 
-              className={`text-4xl rounded-lg p-2 hover:text-green-600 font-bold text-green-400  ${showBack ? 'hidden' : 'inline'}`}
+              className={`text-4xl rounded-lg p-2 hover:text-green-600 font-bold text-green-400 `}
               onClick={handleBack}  
             >Back</button>
-          </div>
+          </div> */}
     </div>
   );
 };

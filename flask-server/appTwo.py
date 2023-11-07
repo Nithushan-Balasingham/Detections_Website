@@ -7,7 +7,7 @@ from keras.models import load_model
 import torch
 
 model = torch.hub.load('ultralytics/yolov5', 'custom', path='D:/Intern_2/Projects/Project_1/flask-server/Sananthan.pt')
-predicted_classes=["1","2","3","4","5","6","7","8","9"] #For multiple classes put class names as string
+predicted_classes=["1","2","3","4","5","6","7","8","9"]
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 model.to(device).eval()
 

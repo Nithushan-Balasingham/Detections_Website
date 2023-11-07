@@ -14,11 +14,13 @@ from datetime import datetime
 import time
 
 
-cred = credentials.Certificate("Fyp.json")
+cred = credentials.Certificate("JSOn FILE")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://final-fb73b-default-rtdb.firebaseio.com'
+    'databaseURL': 'Url'
 })
-ref = db.reference('drowsiness')
+ref = db.reference('collection Name')
+refTwo = db.reference("collection Name")
+
 last_push_time = None
 
 app = Flask(__name__)
@@ -26,13 +28,14 @@ CORS(app)
 
 known_faces = {
     "Nithushan": face_recognition.face_encodings(face_recognition.load_image_file("D:/Intern_2/Projects/Project_1/flask-server/Nithushan.jpg"))[0],
-    "Shraff": face_recognition.face_encodings(face_recognition.load_image_file("D:/Intern_2/Projects/Project_1/flask-server/shraff.jpg"))[0],
-    "Sugunan": face_recognition.face_encodings(face_recognition.load_image_file("D:/Intern_2/Projects/Project_1/flask-server/sugunan.jpg"))[0]
+    "Sananthan": face_recognition.face_encodings(face_recognition.load_image_file("D:/Intern_2/Projects/Project_1/flask-server/Sananthan.jpg"))[0],
+    "Raj": face_recognition.face_encodings(face_recognition.load_image_file("D:/Intern_2/Projects/Project_1/flask-server/Raj.jpg"))[0]
+
 }
 
 current_frame = 0
 drowsy_frames = 0
-max_left = 0
+max_left =0
 max_right = 0
 
 mp_face_mesh = mp.solutions.face_mesh
@@ -45,7 +48,8 @@ LIPS = [61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 308, 324, 318, 402, 3
 UPPER_LOWER_LIPS = [13, 14]
 LEFT_RIGHT_LIPS = [78, 308]
 
-DROWSY_FRAMES_THRESHOLD = 2
+DROWSY_FRAMES_THRESHOLD = 3
+last_detected_name = None
 
 @app.route('/upload', methods=['POST'])
 def upload(): 
@@ -60,21 +64,19 @@ def upload():
     
 def gen_frames(image):
     print("test-1")
-    global max_right, max_left,current_frame
+    global max_right, max_left,current_frame,last_detected_name
     yawn = False
     drowsiness = False
     name = "No Face"
     
     with mp_face_mesh.FaceMesh(
-            max_num_faces=2,
+            max_num_faces=1,  
             refine_landmarks=True,
             min_detection_confidence=0.5,
-            min_tracking_confidence=0.5
+            min_tracking_confidence=0.5 
     ) as face_mesh:
-        img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
-        frame = cv2.flip(img, 1)
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        img_h, img_w = frame.shape[:2]
+        rgb_frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        img_h, img_w = rgb_frame.shape[:2]
         results = face_mesh.process(rgb_frame)
 
         face_locations = face_recognition.face_locations(rgb_frame)
@@ -92,9 +94,6 @@ def gen_frames(image):
                         name = list(known_faces.keys())[best_match_index]
                 face_names.append(name)
 
-        for (top, right, bottom, left), name in zip(face_locations, face_names):
-                    render_detected_face(frame, top, right, bottom, left,name)
-
         if results.multi_face_landmarks:
                     all_landmarks = np.array(
                         [np.multiply([p.x, p.y], [img_w, img_h]).astype(int) for p in
@@ -103,8 +102,7 @@ def gen_frames(image):
                     left_eye = all_landmarks[LEFT_EYE]
                     lip = all_landmarks[LIPS]
 
-                    render_drowsiness_n_yawn(frame, left_eye, right_eye, lip)
-
+                    # render_drowsiness_n_yawn(rgb_frame, left_eye, right_eye, lip)
                     len_left = open_len(right_eye)
                     len_right = open_len(left_eye)
 
@@ -114,8 +112,8 @@ def gen_frames(image):
                     drowsy_frames = 1 if (len_left <= int(
                         max_left / 2) + 1 and len_right <= max_right // 2 + 1) else 0
                     
-                    print(len_right,len_left,max_left,max_right)
-                    print(drowsy_frames)
+                    print(len_right,len_left)
+                    # print(drowsy_frames)
                     if(drowsy_frames):
                         current_frame+=1
                     else:
@@ -134,9 +132,9 @@ def gen_frames(image):
                         ref.push(data)
 
                     ratio_lips = get_aspect_ratio(
-                        frame, results, UPPER_LOWER_LIPS, LEFT_RIGHT_LIPS)
+                        rgb_frame, results, UPPER_LOWER_LIPS, LEFT_RIGHT_LIPS)
                     if all_landmarks is not None:
-                        if ratio_lips < 1.8:
+                        if ratio_lips > 0.5:
                             yawn = True
     
     return {"Name":name, "Yawn":yawn, "Drowsiness":drowsiness}

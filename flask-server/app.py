@@ -14,11 +14,11 @@ from firebase_admin import db
 from datetime import datetime
 
 
-cred = credentials.Certificate("Fyp.json")
+cred = credentials.Certificate("Json File")
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://final-fb73b-default-rtdb.firebaseio.com'
+    'databaseURL': ''
 })
-ref = db.reference('drowsiness')
+ref = db.reference('Collection Name')
 app = Flask(__name__)
 cors = CORS(app)
 

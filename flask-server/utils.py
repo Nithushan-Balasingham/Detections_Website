@@ -16,7 +16,8 @@ def get_aspect_ratio(image, outputs, top_bottom, left_right):
         right = landmark.landmark[left_right[1]]
         top_bottom_dis = euclidean_distance(image, top, bottom)
         left_right_dis = euclidean_distance(image, left, right)
-        return left_right_dis / top_bottom_dis
+        return top_bottom_dis / left_right_dis
+
     return None
 
 

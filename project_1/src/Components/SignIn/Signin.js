@@ -6,9 +6,14 @@ function Signin() {
     const {signIn} = UserAuth( )
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+
     const [error, setError] = useState('');
     const navigate = useNavigate()
 
+    const handlePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+  };
     const handleSubmit = async(e) =>{
         e.preventDefault();
             try {
@@ -22,7 +27,7 @@ function Signin() {
           };
   return (
             <div className='h-screen w-full flex justify-center items-center tracking-wide'>
-          <div className=' text-[#1f2937] p-8 shadow-xl shadow-black rounded-lg  h-[400px]'>
+          <div className=' text-[#1f2937] p-8 shadow-xl shadow-black rounded-lg  h-[420px] w-[400px]'>
             <div>
             <div className='flex flex-col items-center justify-center'>
             <div className='text-5xl mb-6 flex items-center justify-center flex-col text-teal-400'>Welcome</div>
@@ -39,14 +44,20 @@ function Signin() {
                 />
             </div>
             <div className='flex flex-col m-3'>
+              <div className='flex items-center justify-between '>
                 <label className='font-bold w-fit text-2xl text-green-400'>Password</label>
+                <span className=' cursor-pointer' onClick={handlePasswordVisibility}>
+                                  {showPassword ? '🔓' : '🔒'}
+                  </span>
+                  </div>
                 <input
                 onChange={(e) => setPassword(e.target.value)}
                 className='w-250 px-4 py-2 border rounded-lg text-teal-400'
                 value={password}
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 placeholder='password'
                 />
+                 
             </div>
             {/* <div className='field_1'>
                 <label>Confirm Password</label>
